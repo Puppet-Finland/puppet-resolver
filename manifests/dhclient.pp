@@ -10,10 +10,15 @@ class resolver::dhclient
 {
     $servers_string = join($servers, ',')
 
+    file { $config_file:
+        ensure => 'file',
+    }
+
     file_line { 'resolver_config':
-        path  => $config_file,
-        line  => "supersede domain-name-servers ${servers_string};",
-        match => '^supersede\ domain-name-servers',
+        path    => $config_file,
+        line    => "supersede domain-name-servers ${servers_string};",
+        match   => '^supersede\ domain-name-servers',
+        require => File[$config_file],
     }
 
     $l_service_restart_command = $::osfamily ? {
