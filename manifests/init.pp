@@ -29,6 +29,12 @@ if $manage {
         class { '::resolver::windows':
             servers => $servers,
         }
+    } elsif $::osfamily == 'FreeBSD' {
+        class { '::resolver::dhclient':
+            servers                 => $servers,
+            config_file             => $config_file,
+            service_restart_command => $service_restart_command,
+        }
     } else {
         if $::lsbdistcodename =~ /(bionic|Thirty)/ {
             class { '::resolver::systemd_resolved':
