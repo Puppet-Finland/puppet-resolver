@@ -36,7 +36,7 @@ if $manage {
             service_restart_command => $service_restart_command,
         }
     } else {
-        if $::lsbdistcodename =~ /(bionic|focal|Thirty)/ {
+        if $::lsbdistcodename =~ /(bionic|focal|Thirty|Ootpa)/ {
             class { '::resolver::systemd_resolved':
                 servers => $servers,
                 domains => $domains,
