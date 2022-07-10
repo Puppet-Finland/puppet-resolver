@@ -1,6 +1,15 @@
-# This file can be used to install module dependencies for unit testing
-# See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
   forge_modules:
-#     stdlib: "puppetlabs/stdlib"
+    cron_core:
+      repo: "puppetlabs/cron_core"
+      ref: "1.1.0"
+    dsc:
+      repo: "puppetlabs/dsc"
+      ref: "1.9.4"
+    stdlib:
+      repo: "puppetlabs/stdlib"
+      ref: "8.1.0"
+    yumrepo_core:
+      repo: "puppetlabs/yumrepo_core"
+      ref: "1.1.0"
