@@ -6,7 +6,7 @@ describe 'resolver' do
   default_params = { 'servers' => ['8.8.8.8', '8.8.4.4'],
                      'domains' => ['example.org', 'example.com'] }
 
-  # xenial          = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['16.04'] }] }
+  xenial          = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['16.04'] }] }
   # bionic          = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['18.04'] }] }
   # focal           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['20.04'] }] }
   # jammy           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['22.04'] }] }
@@ -20,6 +20,23 @@ describe 'resolver' do
       let(:params) { default_params }
 
       it { is_expected.to compile }
+    end
+  end
+
+  on_supported_os(xenial).each do |os, os_facts|
+    context "default resolver on #{os}" do
+      let(:facts) { os_facts }
+      let(:params) { default_params }
+
+      it { is_expected.to contain_class('resolver::dhclient') }
+      it { is_expected.to contain_file('/etc/dhcp/dhclient.conf') }
+      it { is_expected.to contain_file_line('resolver_config').with('require' => 'File[/etc/dhcp/dhclient.conf]') }
+      it {
+        is_expected.to contain_exec('restart networking service').with('require' => 'File_line[resolver_config]',
+                                                                       'subscribe'   => 'File_line[resolver_config]',
+                                                                       'command'     => '/bin/systemctl restart networking',
+                                                                       'refreshonly' => true)
+      }
     end
   end
 
