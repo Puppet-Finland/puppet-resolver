@@ -6,12 +6,11 @@ describe 'resolver' do
   default_params = { 'servers' => ['8.8.8.8', '8.8.4.4'],
                      'domains' => ['example.org', 'example.com'] }
 
-  xenial          = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['16.04'] }] }
-  bionic          = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['18.04'] }] }
-  focal           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['20.04'] }] }
-  jammy           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['22.04'] }] }
-  systemd_ubuntus = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['18.04','20.04', '22.04'] }] }
-
+  # xenial          = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['16.04'] }] }
+  # bionic          = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['18.04'] }] }
+  # focal           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['20.04'] }] }
+  # jammy           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['22.04'] }] }
+  systemd_ubuntus = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['18.04', '20.04', '22.04'] }] }
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
@@ -31,13 +30,14 @@ describe 'resolver' do
 
       it { is_expected.to contain_class('resolver::systemd_resolved') }
       it { is_expected.to contain_file('/etc/systemd/resolved.conf.d') }
-      it { is_expected.to contain_file('/etc/systemd/resolved.conf.d/50_puppet_resolver.conf').with('notify'  => 'Exec[restart-systemd-resolved]',
-                                                                                                    'require' => 'File[/etc/systemd/resolved.conf.d]') }
-      it { is_expected.to contain_exec('restart-systemd-resolved').with('command'     => 'systemctl restart systemd-resolved',
-                                                                        'refreshonly' => true) }
+      it {
+        is_expected.to contain_file('/etc/systemd/resolved.conf.d/50_puppet_resolver.conf').with('notify' => 'Exec[restart-systemd-resolved]',
+                                                                                                    'require' => 'File[/etc/systemd/resolved.conf.d]')
+      }
+      it {
+        is_expected.to contain_exec('restart-systemd-resolved').with('command' => 'systemctl restart systemd-resolved',
+                                                                        'refreshonly' => true)
+      }
     end
   end
-
-
-
 end
