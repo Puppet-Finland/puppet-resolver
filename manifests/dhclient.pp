@@ -1,6 +1,13 @@
 #
 # @summary add DNS servers to dhclient.conf
 #
+# @param servers
+#   List of IPs to use for resolving
+# @param config_file
+#   Configuration file for dhclient. Has effect only if dhclient is in use.
+# @param service_restart_command
+#   Command to run to restart DNS resolving service
+#
 class resolver::dhclient (
   Array[String]    $servers,
   Optional[String] $config_file = undef,
@@ -19,11 +26,12 @@ class resolver::dhclient (
     require => File[$config_file],
   }
 
-  case $facts['os']['name'] {
+  # The lint ignore is needed to make rspec tests behave correctly in this code block
+  case $facts['operatingsystem'] { # lint:ignore:legacy_facts
     'FreeBSD': {
       $l_service_restart_command = "${service_restart_command} ${facts['networking']['primary']}"
     }
-    'RedHat': {
+    /(RedHat|CentOS|Rocky)/: {
       $l_service_restart_command = '/bin/systemctl restart NetworkManager'
       file { '/etc/NetworkManager/conf.d/dns-dhclient.conf':
         ensure  => 'file',

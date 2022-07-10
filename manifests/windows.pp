@@ -1,6 +1,8 @@
 #
 # @summary Manage DNS settings for Windows primary network interface
 #
+# @param servers
+#
 class resolver::windows (
   Array[String] $servers
 ) {

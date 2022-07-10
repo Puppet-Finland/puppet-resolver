@@ -1,6 +1,9 @@
 #
 # @summary Manage resolver settings for systemd-resolved
 #
+# @param servers
+# @param domains
+#
 class resolver::systemd_resolved (
   Array[String]           $servers,
   Optional[Array[String]] $domains = undef,

@@ -1,7 +1,7 @@
 # @summary add DNS servers to dhclient.conf
 #
 # @param servers
-#   A list of DNS servers to use. An array of strings.
+#   A list of DNS servers to use
 # @param domains
 #   A list of custom DNS domains. Only used with systemd-resolved.
 #   Prefix a domain with a ~ to make systemd-resolved use the $servers
@@ -13,41 +13,37 @@
 # @param manage
 #   Whether to manage dhclient.conf with this module. Defaults to true.
 #
-class resolver
-(
-    Array[String]           $servers,
-    Optional[Array[String]] $domains = undef,
-    Optional[String]        $config_file = undef,
-    Optional[String]        $service_restart_command = undef,
-    Boolean                 $manage = true,
-)
-{
-
-if $manage {
-
-    if $::osfamily == 'windows' {
-        class { '::resolver::windows':
-            servers => $servers,
-        }
-    } elsif $::osfamily == 'FreeBSD' {
-          class { '::resolver::dhclient':
-              servers                 => $servers,
-              config_file             => $config_file,
-              service_restart_command => $service_restart_command,
-          }
+class resolver (
+  Array[String]           $servers,
+  Optional[Array[String]] $domains = undef,
+  Optional[String]        $config_file = undef,
+  Optional[String]        $service_restart_command = undef,
+  Boolean                 $manage = true,
+) {
+  if $manage {
+    if $facts['os']['family'] == 'windows' {
+      class { 'resolver::windows':
+        servers => $servers,
+      }
+    } elsif $facts['os']['family'] == 'FreeBSD' {
+      class { 'resolver::dhclient':
+        servers                 => $servers,
+        config_file             => $config_file,
+        service_restart_command => $service_restart_command,
+      }
     } else {
-        if $facts['os']['distro']['codename'] =~ /(bionic|focal|Thirty)/ {
-            class { '::resolver::systemd_resolved':
-                servers => $servers,
-                domains => $domains,
-            }
-        } else {
-              class { '::resolver::dhclient':
-                  servers                 => $servers,
-                  config_file             => $config_file,
-                  service_restart_command => $service_restart_command,
-              }
+      if $facts['os']['distro']['codename'] =~ /(bionic|focal|Thirty)/ {
+        class { 'resolver::systemd_resolved':
+          servers => $servers,
+          domains => $domains,
         }
+      } else {
+        class { 'resolver::dhclient':
+          servers                 => $servers,
+          config_file             => $config_file,
+          service_restart_command => $service_restart_command,
+        }
+      }
     }
-}
+  }
 }
