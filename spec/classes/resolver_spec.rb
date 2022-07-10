@@ -11,9 +11,25 @@ describe 'resolver' do
   # focal           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['20.04'] }] }
   # jammy           = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['22.04'] }] }
   systemd_ubuntus = { supported_os: [{ 'operatingsystem' => 'Ubuntu', 'operatingsystemrelease' => ['18.04', '20.04', '22.04'] }] }
+  centos          = { supported_os: [{ 'operatingsystem' => 'CentOS', 'operatingsystemmajrelease' => ['7', '8'] }] }
+  rocky           = { supported_os: [{ 'operatingsystem' => 'Rocky', 'operatingsystemmajrelease' => ['7', '8'] }] }
+  rhel            = { supported_os: [{ 'operatingsystem' => 'RedHat', 'operatingsystemmajrelease' => ['7', '8'] }] }
+  redhat_distros  = {}
+  redhat_distros.merge(**centos, **rocky, **rhel)
 
   on_supported_os.each do |os, os_facts|
-    context "on #{os}" do
+    context "compiles on #{os}" do
+      extra_facts = {}
+      extra_facts = { os: { distro: { codename: 'RedHat' } } } if os_facts[:osfamily] == 'RedHat'
+      let(:facts) { os_facts.merge(extra_facts) }
+      let(:params) { default_params }
+
+      it { is_expected.to compile }
+    end
+  end
+
+  on_supported_os(redhat_distros).each do |os, os_facts|
+    context "default resolver settings on #{os}" do
       extra_facts = {}
       extra_facts = { os: { distro: { codename: 'RedHat' } } } if os_facts[:osfamily] == 'RedHat'
       let(:facts) { os_facts.merge(extra_facts) }
@@ -24,7 +40,7 @@ describe 'resolver' do
   end
 
   on_supported_os(xenial).each do |os, os_facts|
-    context "default resolver on #{os}" do
+    context "default resolver settings on #{os}" do
       let(:facts) { os_facts }
       let(:params) { default_params }
 
@@ -41,7 +57,7 @@ describe 'resolver' do
   end
 
   on_supported_os(systemd_ubuntus).each do |os, os_facts|
-    context "default resolver on #{os}" do
+    context "default resolver settings on #{os}" do
       let(:facts) { os_facts }
       let(:params) { default_params }
 
