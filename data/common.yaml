@@ -1,2 +1,2 @@
 resolver::config_file: '/etc/dhcp/dhclient.conf'
-#resolver::method: 'sysconfig'
+resolver::service_restart: true

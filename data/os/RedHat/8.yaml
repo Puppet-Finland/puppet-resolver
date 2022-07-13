@@ -1,2 +1,1 @@
 resolver::method: 'sysconfig'
-resolver::service_restart_command: '/bin/systemctl restart NetworkManager'
