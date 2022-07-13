@@ -3,9 +3,11 @@
 #
 # @param servers
 # @param domains
+# @param interface
 #
 class resolver::systemd_resolved (
   Array[String]           $servers,
+  String                  $interface,
   Optional[Array[String]] $domains = undef,
 ) {
   $resolved_conf_d = '/etc/systemd/resolved.conf.d'

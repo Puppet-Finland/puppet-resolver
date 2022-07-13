@@ -1,3 +1,0 @@
-resolver::manage: true
-resolver::config_file: '/etc/dhclient.conf'
-resolver::service_restart_command: '/etc/rc.d/dhclient restart'
