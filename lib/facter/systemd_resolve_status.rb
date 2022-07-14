@@ -26,7 +26,10 @@ Facter.add(:systemd_resolve_status) do
           settings[link] = {}
         elsif line.start_with?(%r{\s*DNS\sServers:\s})
           dns_servers = line.match(%r{: (.*)$})[1].split(' ')
-          settings[link] = dns_servers
+          settings[link][:dns_servers] = dns_servers
+        elsif line.start_with?(%r{\s*DNS\sDomain:\s})
+          dns_domain = line.match(%r{: (.*)$})[1].split(' ')
+          settings[link][:dns_domain] = dns_domain
         end
       end
 
