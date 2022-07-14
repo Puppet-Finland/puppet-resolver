@@ -11,11 +11,14 @@
 #
 class resolver::sysconfig (
   Array[String, 1, 2]        $servers,
-  String                     $interface,
   Boolean                    $service_restart,
+  Optional[String]           $interface = undef,
   Optional[Array[String, 1]] $domains = undef,
   Optional[String]           $service_restart_command = undef,
 ) {
+  # Interface is required here, so default to the primary interface
+  $l_interface = $facts['networking']['primary']
+
   if $service_restart {
     unless $service_restart_command {
       fail('ERROR: service_restart_command must be set when service_restart is set!')
@@ -53,7 +56,7 @@ class resolver::sysconfig (
   $settings.each |$s| {
     file_line { $s[0]:
       ensure => 'present',
-      path   => "/etc/sysconfig/network-scripts/ifcfg-${interface}",
+      path   => "/etc/sysconfig/network-scripts/ifcfg-${l_interface}",
       line   => "${s[0]}=${s[1]}",
       notify => $notify,
     }
@@ -62,7 +65,7 @@ class resolver::sysconfig (
   if $service_restart {
     # Replace _INTERFACE_ in the service restart command - if found - with the
     # real interface name
-    $l_service_restart_command = regsubst($service_restart_command, '_INTERFACE_', $interface)
+    $l_service_restart_command = regsubst($service_restart_command, '_INTERFACE_', $l_interface)
 
     exec { 'restart networking service':
       command     => $l_service_restart_command,

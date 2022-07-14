@@ -33,13 +33,6 @@ class resolver (
   Optional[String]        $service_restart_command = undef,
   Boolean                 $manage = true,
 ) {
-  # Default to using the primary network interface as seen by Puppet.
-  # This value is not used by all resolver configuration methods.
-  $l_interface = $interface ? {
-    undef   => $facts['networking']['primary'],
-    default => $interface,
-  }
-
   if $manage {
     case $method {
       'dhclient': {
@@ -53,7 +46,7 @@ class resolver (
         class { 'resolver::sysconfig':
           servers                 => $servers,
           domains                 => $domains,
-          interface               => $l_interface,
+          interface               => $interface,
           service_restart         => $service_restart,
           service_restart_command => $service_restart_command,
         }
@@ -62,7 +55,7 @@ class resolver (
         class { 'resolver::systemd_resolved':
           servers                 => $servers,
           domains                 => $domains,
-          interface               => $l_interface,
+          interface               => $interface,
           service_restart         => $service_restart,
           service_restart_command => $service_restart_command,
         }

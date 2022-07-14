@@ -38,7 +38,7 @@ describe 'resolver' do
       let(:params) { default_params }
 
       if os_facts[:operatingsystem] == 'Ubuntu' && ['18.04', '20.04', '22.04'].include?(os_facts[:operatingsystemmajrelease])
-        it { is_expected.to contain_class('resolver::systemd_resolved') }
+        it { is_expected.to contain_class('resolver::systemd_resolved::global') }
         it { is_expected.to contain_file('/etc/systemd/resolved.conf.d') }
         it {
           is_expected.to contain_file('/etc/systemd/resolved.conf.d/50_puppet_resolver.conf').with('notify' => 'Exec[restart networking service]',
@@ -178,7 +178,7 @@ describe 'resolver' do
       let(:facts) { os_facts }
       let(:params) { default_params.merge({ 'method': 'systemd-resolved' }) }
 
-      it { is_expected.to contain_class('resolver::systemd_resolved') }
+      it { is_expected.to contain_class('resolver::systemd_resolved::global') }
     end
 
     context "generic systemd-resolved method with no service restart on #{os}" do
