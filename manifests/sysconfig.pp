@@ -43,7 +43,7 @@ class resolver::sysconfig (
     default => { 'DOMAIN' => $dns_domain }
   }
 
-  $ifcfg_notify = $service_restart ? {
+  $notify = $service_restart ? {
     false   => undef,
     default => Exec['restart networking service'],
   }
@@ -55,7 +55,7 @@ class resolver::sysconfig (
       ensure => 'present',
       path   => "/etc/sysconfig/network-scripts/ifcfg-${interface}",
       line   => "${s[0]}=${s[1]}",
-      notify => $ifcfg_notify,
+      notify => $notify,
     }
   }
 

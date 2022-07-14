@@ -41,11 +41,11 @@ describe 'resolver' do
         it { is_expected.to contain_class('resolver::systemd_resolved') }
         it { is_expected.to contain_file('/etc/systemd/resolved.conf.d') }
         it {
-          is_expected.to contain_file('/etc/systemd/resolved.conf.d/50_puppet_resolver.conf').with('notify' => 'Exec[restart-systemd-resolved]',
+          is_expected.to contain_file('/etc/systemd/resolved.conf.d/50_puppet_resolver.conf').with('notify' => 'Exec[restart networking service]',
                                                                                                       'require' => 'File[/etc/systemd/resolved.conf.d]')
         }
         it {
-          is_expected.to contain_exec('restart-systemd-resolved').with('command' => 'systemctl restart systemd-resolved',
+          is_expected.to contain_exec('restart networking service').with('command' => 'systemctl restart systemd-resolved',
                                                                           'refreshonly' => true)
         }
       end
@@ -171,6 +171,20 @@ describe 'resolver' do
 
       it { is_expected.to contain_class('resolver::sysconfig') }
       it { is_expected.to contain_file_line('DNS1').without_notify }
+      it { is_expected.not_to contain_exec('restart networking service') }
+    end
+
+    context "generic systemd-resolved method on #{os}" do
+      let(:facts) { os_facts }
+      let(:params) { default_params.merge({ 'method': 'systemd-resolved' }) }
+
+      it { is_expected.to contain_class('resolver::systemd_resolved') }
+    end
+
+    context "generic systemd-resolved method with no service restart on #{os}" do
+      let(:facts) { os_facts }
+      let(:params) { default_params.merge({ 'method': 'systemd-resolved', 'service_restart': false }) }
+
       it { is_expected.not_to contain_exec('restart networking service') }
     end
   end

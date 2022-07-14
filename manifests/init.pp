@@ -60,9 +60,11 @@ class resolver (
       }
       'systemd-resolved': {
         class { 'resolver::systemd_resolved':
-          servers   => $servers,
-          domains   => $domains,
-          interface => $l_interface,
+          servers                 => $servers,
+          domains                 => $domains,
+          interface               => $l_interface,
+          service_restart         => $service_restart,
+          service_restart_command => $service_restart_command,
         }
       }
       'windows': {
