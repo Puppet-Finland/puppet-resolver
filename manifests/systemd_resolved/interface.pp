@@ -12,7 +12,7 @@ define resolver::systemd_resolved::interface (
   Optional[String]    $interface = undef,
 ) {
   # Update DNS settings if they're out of sync with the current desired state
-  if (($facts['systemd_resolved_status'][$interface]['dns_servers'] != $servers) or ($facts['systemd_resolved_status'][$interface]['dns_domain'] != $domains)) { # lint:ignore:140chars
+  if (($facts['systemd_resolve_status'][$interface]['dns_servers'] != $servers) or ($facts['systemd_resolve_status'][$interface]['dns_domain'] != $domains)) { # lint:ignore:140chars
     $server_map = $servers.map |$server| {
       "--set-dns=${server}"
     }

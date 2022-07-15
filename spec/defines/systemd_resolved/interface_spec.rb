@@ -7,7 +7,7 @@ describe 'resolver::systemd_resolved::interface' do
                      'interface': 'eth0',
                      'domains': ['example.org', 'example.com'] }
 
-  extra_facts = { systemd_resolved_status:
+  extra_facts = { systemd_resolve_status:
     {
       'global': {
       },
