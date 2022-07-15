@@ -1,0 +1,2 @@
+resolver::method: 'systemd-resolved'
+resolver::service_restart_command: 'systemctl restart systemd-resolved'

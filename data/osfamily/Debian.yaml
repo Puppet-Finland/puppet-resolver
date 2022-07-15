@@ -1,3 +1,0 @@
-resolver::manage: true
-resolver::config_file: '/etc/dhcp/dhclient.conf'
-resolver::service_restart_command: '/bin/systemctl restart networking'

@@ -1,48 +1,73 @@
 # @summary add DNS servers to dhclient.conf
 #
+# @param method
+#   Method to use to manage resolver configuration
 # @param servers
 #   A list of DNS servers to use
+# @param interface
+#   Interface to make changes to. Affects 'sysconfig' and 'systemd-resolved'
+#   methods.
 # @param domains
-#   A list of custom DNS domains. Only used with systemd-resolved.
+#   A list of custom DNS domains. Used with systemd-resolved and sysconfig
+#   methods. For sysconfig it sets the search domain based on the first
+#   entry in the array: any additional domains are ignored.
+#
 #   Prefix a domain with a ~ to make systemd-resolved use the $servers
 #   when resolving queries aimed at the domain.
 # @param config_file
 #   Location of dhclient.conf. Comes from module Hiera.
+# @param service_restart
+#   Whether to restart networking
 # @param service_restart_command
 #   Command used to restart networking. Comes from module Hiera.
 # @param manage
 #   Whether to manage dhclient.conf with this module. Defaults to true.
 #
 class resolver (
-  Array[String]           $servers,
+  Enum['dhclient', 'sysconfig', 'systemd-resolved', 'windows'] $method,
+  Array[String, 1, 2]     $servers,
+  Boolean                 $service_restart,
   Optional[Array[String]] $domains = undef,
+  Optional[String]        $interface = undef,
   Optional[String]        $config_file = undef,
   Optional[String]        $service_restart_command = undef,
   Boolean                 $manage = true,
 ) {
   if $manage {
-    if $facts['os']['family'] == 'windows' {
-      class { 'resolver::windows':
-        servers => $servers,
-      }
-    } elsif $facts['os']['family'] == 'FreeBSD' {
-      class { 'resolver::dhclient':
-        servers                 => $servers,
-        config_file             => $config_file,
-        service_restart_command => $service_restart_command,
-      }
-    } else {
-      if $facts['os']['distro']['codename'] =~ /(bionic|focal|Thirty)/ {
-        class { 'resolver::systemd_resolved':
-          servers => $servers,
-          domains => $domains,
-        }
-      } else {
+    case $method {
+      'dhclient': {
         class { 'resolver::dhclient':
           servers                 => $servers,
           config_file             => $config_file,
           service_restart_command => $service_restart_command,
         }
+      }
+      'sysconfig': {
+        class { 'resolver::sysconfig':
+          servers                 => $servers,
+          domains                 => $domains,
+          interface               => $interface,
+          service_restart         => $service_restart,
+          service_restart_command => $service_restart_command,
+        }
+      }
+      'systemd-resolved': {
+        class { 'resolver::systemd_resolved':
+          servers                 => $servers,
+          domains                 => $domains,
+          interface               => $interface,
+          service_restart         => $service_restart,
+          service_restart_command => $service_restart_command,
+        }
+      }
+      'windows': {
+        class { 'resolver::windows':
+          servers => $servers,
+        }
+      }
+      default: {
+        # We should never reach this point due to data type validation
+        fail('ERROR: unknown method!')
       }
     }
   }

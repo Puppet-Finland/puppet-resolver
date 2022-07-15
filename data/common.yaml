@@ -1,1 +1,2 @@
-resolver::manage: false
+resolver::config_file: '/etc/dhcp/dhclient.conf'
+resolver::service_restart: true

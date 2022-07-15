@@ -31,15 +31,6 @@ class resolver::dhclient (
     'FreeBSD': {
       $l_service_restart_command = "${service_restart_command} ${facts['networking']['primary']}"
     }
-    /(RedHat|CentOS|Rocky)/: {
-      $l_service_restart_command = '/bin/systemctl restart NetworkManager'
-      file { '/etc/NetworkManager/conf.d/dns-dhclient.conf':
-        ensure  => 'file',
-        content => template('resolver/dns-dhclient.conf.erb'),
-        notify  => Exec['restart networking service'],
-        require => File_line['resolver_config'],
-      }
-    }
     default: {
       $l_service_restart_command = $service_restart_command
     }
