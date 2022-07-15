@@ -113,6 +113,7 @@ If you need to configure resolvers for more than one interface you can use the
 Notes:
 * The domains parameter is optional
 * Multiple domains are supported
+* If systemd-resolved has already obtained domain information from elsewhere it does not get overwritten (yet). This can cause unexpected behavior and/or flickering on Puppet runs.
 
 ## windows
 
