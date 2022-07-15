@@ -7,9 +7,9 @@
 # @param interface
 #
 define resolver::systemd_resolved::interface (
-  Array[String, 1, 2]        $servers,
-  Optional[String]           $interface = undef,
-  Optional[Array[String, 1]] $domains = undef,
+  Array[String, 1, 2] $servers,
+  Array[String]       $domains = [],
+  Optional[String]    $interface = undef,
 ) {
   # Update DNS settings if they're out of sync with the current desired state
   if (($facts['systemd_resolved_status'][$interface]['dns_servers'] != $servers) or ($facts['systemd_resolved_status'][$interface]['dns_domain'] != $domains)) { # lint:ignore:140chars
@@ -19,7 +19,7 @@ define resolver::systemd_resolved::interface (
 
     $set_dns_params = $server_map.join(' ')
 
-    $domain_map = $domain.map |$domain| {
+    $domain_map = $domains.map |$domain| {
       "--set-domain=${domain}"
     }
 
