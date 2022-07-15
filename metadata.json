@@ -5,6 +5,7 @@
   "summary": "Manage resolver configuration",
   "license": "BSD-2-Clause",
   "source": "https://github.com/Puppet-Finland/puppet-resolver",
+  "project_page": "https://github.com/Puppet-Finland/puppet-resolver",
   "issues_url": "https://github.com/Puppet-Finland/puppet-resolver/issues",
   "dependencies": [
     {
