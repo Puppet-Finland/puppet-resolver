@@ -128,11 +128,13 @@ Notes:
 
 # Custom facts
 
-This module contains one custom fact, *systemd_resolved_status*. If systemd-resolved is running it should contain a hash with
+This module contains one custom fact, *systemd_resolve_status*. If systemd-resolved is running it should contain a hash with
 DNS settings for each interface. For example:
 
 ```
 {
+  Global => {
+  }
   eth0 => {
     dns_domain => [
       "example.org"

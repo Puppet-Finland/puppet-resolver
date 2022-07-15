@@ -21,7 +21,10 @@ Facter.add(:systemd_resolve_status) do
     if systemd_resolved_running
       output = `systemd-resolve --status`
       output.split("\n").each do |line|
-        if line.start_with?('Link ')
+        if line.start_with?('Global')
+          link = 'Global'
+          settings[link] = {}
+        elsif line.start_with?('Link ')
           link = line.match(%r{\((.*)\)})[1]
           settings[link] = {}
         elsif line.start_with?(%r{\s*DNS\sServers:\s})

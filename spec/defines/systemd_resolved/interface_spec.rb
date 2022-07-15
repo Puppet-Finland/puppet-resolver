@@ -9,6 +9,8 @@ describe 'resolver::systemd_resolved::interface' do
 
   extra_facts = { systemd_resolved_status:
     {
+      'global': {
+      },
       'eth0': {
         'dns_domain': [
           'example.org',
