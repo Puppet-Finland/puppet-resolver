@@ -1,0 +1,15 @@
+network:
+     version: 2
+     ethernets:
+         <%= $interface_str %>:
+             dhcp4: true
+             dhcp6: true
+             nameservers:
+                     search: [<%= $domains_str %>]
+                     addresses: [<%= $servers_str %>]
+             dhcp4-overrides:
+                     use-dns: false
+                     use-domains: false
+             dhcp6-overrides:
+                     use-dns: false
+                     use-domains: false

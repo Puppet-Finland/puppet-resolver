@@ -56,6 +56,16 @@ Example usage:
 Notes:
 * The *domains* parameter is not supported
 
+## netplan
+
+The netplan method is somewhat dangerous as it touches network interface
+settings instead of just DNS settings. Therefore it has to enabled explicitly
+using the *resolver::netplan::interface* define and does not have a
+convenience wrapper in the main class. It takes the exact same parameters as
+*resolver::systemd_resolved::interface*. Using the netplan method is the only
+way to properly customize DNS servers on Ubuntu 20.04 in Amazon EC2, for
+example.
+
 ## sysconfig
 
 Example usage:
@@ -129,8 +139,10 @@ Notes:
 
 # Custom facts
 
-This module contains one custom fact, *systemd_resolve_status*. If systemd-resolved is running it should contain a hash with
-DNS settings for each interface. For example:
+## systemd_resolve_status
+
+If systemd-resolved is running this fact should contain a hash with DNS
+settings for each interface. For example:
 
 ```
 {
@@ -164,3 +176,8 @@ DNS settings for each interface. For example:
   }
 }
 ```
+
+## systemd_resolved_active
+
+This fact returns true if "systemctl is-active systemd-resolve" returns 0 and
+false otherwise.
