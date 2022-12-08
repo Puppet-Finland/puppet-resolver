@@ -68,6 +68,11 @@ example.
 
 ## sysconfig
 
+The sysconfig method depends on *ifup* being available. Older versions of
+Rocky Linux 8 had that installed out of the box, but newer ones don't. For
+the newer ones you need to install *NetworkManager-initscripts-updown*
+package to get *ifup*.
+
 Example usage:
 
     class { 'resolver':
