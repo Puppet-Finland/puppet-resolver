@@ -7,6 +7,7 @@ Facter.add(:systemd_resolve_status) do
 
     systemctl_present = false
     systemd_resolved_running = false
+    resolvectl_present = false
 
     Open3.popen3('which systemctl') do |_stdin, _stdout, _stderr, thread|
       systemctl_present = thread.value.success?
@@ -16,10 +17,18 @@ Facter.add(:systemd_resolve_status) do
       Open3.popen3('systemctl is-active systemd-resolved') do |_stdin, _stdout, _stderr, thread|
         systemd_resolved_running = thread.value.success?
       end
+      Open3.popen3('which resolvectl') do |_stdin, _stdout, _stderr, thread|
+        resolvectl_present = thread.value.success?
+      end
     end
 
     if systemd_resolved_running
-      output = `systemd-resolve --status`
+      output = ''
+      if resolvectl_present
+        output = `resolvectl status`
+      else
+        output = `systemd-resolve --status`
+      end
       output.split("\n").each do |line|
         if line.start_with?('Global')
           link = 'Global'
