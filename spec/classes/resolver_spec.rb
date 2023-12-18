@@ -55,7 +55,7 @@ describe 'resolver' do
       let(:facts) { os_facts }
       let(:params) { default_params.merge({ 'interface': 'eth0' }) }
 
-      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8'].include?(os_facts[:operatingsystemmajrelease])
+      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8', '9'].include?(os_facts[:operatingsystemmajrelease])
         it { is_expected.to contain_class('resolver::sysconfig') }
         it {
           is_expected.to contain_file_line('PEERDNS').with('ensure' => 'present',
@@ -95,7 +95,7 @@ describe 'resolver' do
                        'domains' => ['example.org'] }
       end
 
-      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8'].include?(os_facts[:operatingsystemmajrelease])
+      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8', '9'].include?(os_facts[:operatingsystemmajrelease])
         it { is_expected.to contain_class('resolver::sysconfig') }
         it {
           is_expected.to contain_file_line('PEERDNS').with('ensure' => 'present',
@@ -122,7 +122,7 @@ describe 'resolver' do
       let(:facts) { os_facts }
       let(:params) { { 'servers' => ['8.8.8.8', '8.8.4.4'] } }
 
-      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8'].include?(os_facts[:operatingsystemmajrelease])
+      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8', '9'].include?(os_facts[:operatingsystemmajrelease])
         it { is_expected.to contain_class('resolver::sysconfig') }
         it {
           is_expected.to contain_file_line('PEERDNS').with('ensure' => 'present',
@@ -149,7 +149,7 @@ describe 'resolver' do
       let(:facts) { os_facts }
       let(:params) { default_params.merge({ 'interface': 'eth0', 'service_restart_command': 'nmcli connection reload' }) }
 
-      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8'].include?(os_facts[:operatingsystemmajrelease])
+      if os_facts[:operatingsystem] =~ %r{RedHat|CentOS|Rocky} && ['7', '8', '9'].include?(os_facts[:operatingsystemmajrelease])
         it { is_expected.to contain_class('resolver::sysconfig') }
 
         it {
